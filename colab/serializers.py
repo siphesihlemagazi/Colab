@@ -8,6 +8,8 @@ class SubjectSerializer(serializers.ModelSerializer):
     Serializer for the Subject model.
     """
 
+    instructors = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='username')
+
     class Meta:
         model = Subject
         fields = '__all__'

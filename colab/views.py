@@ -9,6 +9,9 @@ from colab.serializers import (
     CommentSerializer,
 )
 
+from colab.permissions import IsSubjectStaffOrInstructor, IsProjectStuffOrInstructorOrCreator, IsTaskCreatorOrProjectMemberOrStaff
+from rest_framework.exceptions import PermissionDenied, ValidationError
+
 
 class SubjectList(generics.ListCreateAPIView):
     """
@@ -24,6 +27,7 @@ class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+    permission_classes = [IsSubjectStaffOrInstructor]
 
 
 class ProjectList(generics.ListCreateAPIView):
@@ -40,6 +44,7 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsProjectStuffOrInstructorOrCreator]
 
 
 class TaskList(generics.ListCreateAPIView):
@@ -48,6 +53,25 @@ class TaskList(generics.ListCreateAPIView):
     """
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [IsTaskCreatorOrProjectMemberOrStaff]
+
+    def create(self, request, *args, **kwargs):
+        # Check if user has permission to create a new task for a project
+
+        project_id = request.data.get('project')
+        if project_id is not None:
+            try:
+                project = Project.objects.get(id=project_id)
+                if request.user not in project.members.all() and not request.user.is_staff:
+                    raise PermissionDenied('You do not have permission to create a task for this project')
+            except Project.DoesNotExist:
+                raise ValidationError('Invalid project ID')
+        elif not request.user.is_staff:
+            projects = Project.objects.filter(members=request.user)
+            if not projects.exists():
+                raise PermissionDenied('You do not have permission to create a task without specifying a project ID')
+
+        return super().create(request, *args, **kwargs)
 
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -56,6 +80,7 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [IsTaskCreatorOrProjectMemberOrStaff]
 
 
 class ResourceList(generics.ListCreateAPIView):

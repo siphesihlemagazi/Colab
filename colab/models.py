@@ -8,7 +8,7 @@ class Subject(models.Model):
     """
 
     name = models.CharField(max_length=255)
-    instructor = models.ForeignKey(User, on_delete=models.CASCADE)
+    instructors = models.ManyToManyField(User, related_name='subjects')
 
     class Meta:
         app_label = 'colab'
@@ -26,6 +26,8 @@ class Project(models.Model):
     description = models.TextField()
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     members = models.ManyToManyField(User, related_name='projects')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'colab'
