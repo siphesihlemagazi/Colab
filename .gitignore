@@ -2,3 +2,4 @@ config/app.ini
 db.sqlite3
 media/resources
 __pycache__
+migrations

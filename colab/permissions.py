@@ -45,7 +45,7 @@ class IsProjectStuffOrInstructorOrCreator(permissions.BasePermission):
 
 class IsTaskCreatorOrProjectMemberOrStaff(permissions.BasePermission):
     """
-    Custom permission to only allow project members or creators or staff members to create or update a task.
+    Custom permission to only allow project members or creators or staff members to update a task.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -62,3 +62,15 @@ class IsTaskCreatorOrProjectMemberOrStaff(permissions.BasePermission):
             return True
 
         return False
+
+
+class IsResourceCreatorOrProjectMemberOrStaff(IsTaskCreatorOrProjectMemberOrStaff):
+    """
+    Custom permission to only allow project members or creators or staff members to update a resource.
+    """
+
+
+class IsDiscussionCreatorOrProjectMemberOrStaff(IsTaskCreatorOrProjectMemberOrStaff):
+    """
+    Custom permission to only allow project members or creators or staff members to update a discussion.
+    """

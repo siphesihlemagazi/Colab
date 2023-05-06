@@ -8,7 +8,7 @@ class SubjectSerializer(serializers.ModelSerializer):
     Serializer for the Subject model.
     """
 
-    instructors = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='username')
+    instructors = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='id')
 
     class Meta:
         model = Subject
@@ -20,7 +20,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     Serializer for the Project model.
     """
 
-    members = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='username')
+    members = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='id')
 
     class Meta:
         model = Project
@@ -32,8 +32,8 @@ class TaskSerializer(serializers.ModelSerializer):
     Serializer for the Task model.
     """
 
-    assigned_to = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='username')
-    completed_by = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='username', allow_null=True)
+    assigned_to = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='id')
+    completed_by = serializers.SlugRelatedField(many=True, queryset=User.objects.all(), slug_field='id', allow_null=True)
 
     class Meta:
         model = Task
@@ -56,7 +56,7 @@ class DiscussionSerializer(serializers.ModelSerializer):
     """
 
     comments = serializers.StringRelatedField(many=True)
-    started_by = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='username')
+    started_by = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='id')
 
     class Meta:
         model = Discussion
@@ -68,7 +68,7 @@ class CommentSerializer(serializers.ModelSerializer):
     Serializer for the Comment model.
     """
 
-    created_by = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='username')
+    created_by = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='id')
 
     class Meta:
         model = Comment
