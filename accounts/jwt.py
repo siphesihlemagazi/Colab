@@ -1,3 +1,4 @@
+# Redundant
 import jwt
 from rest_framework.authentication import get_authorization_header, BaseAuthentication
 from accounts.models import User

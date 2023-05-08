@@ -2,5 +2,7 @@ config/app.ini
 db.sqlite3
 media/resources
 __pycache__
+*.pyc
+__pycache__/
 migrations
 /colab/migrations/
