@@ -3,3 +3,7 @@ SECRET_KEY =
 debug =
 site_url =
 allowed_hosts =
+
+[gmail]
+email_host_user =
+email_host_password =

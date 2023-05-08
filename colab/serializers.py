@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from accounts.models import User
 from rest_framework import serializers
 from colab.models import Subject, Project, Task, Resource, Discussion, Comment
 

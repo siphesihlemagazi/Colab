@@ -3,6 +3,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from colab import serializers
 from colab import permissions
 from colab.models import Subject, Project, Task, Resource, Discussion, Comment
+from rest_framework.permissions import IsAdminUser
 
 
 class SubjectList(generics.ListCreateAPIView):
@@ -11,6 +12,7 @@ class SubjectList(generics.ListCreateAPIView):
     """
     queryset = Subject.objects.all()
     serializer_class = serializers.SubjectSerializer
+    permission_classes = [IsAdminUser]
 
 
 class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
