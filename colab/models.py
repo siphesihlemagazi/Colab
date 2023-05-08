@@ -7,7 +7,7 @@ class Subject(models.Model):
     Model representing a subject.
     """
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     instructors = models.ManyToManyField(User, related_name='subjects')
 
     class Meta:

@@ -74,3 +74,15 @@ class IsDiscussionCreatorOrProjectMemberOrStaff(IsTaskCreatorOrProjectMemberOrSt
     """
     Custom permission to only allow project members or creators or staff members to update a discussion.
     """
+
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow staff users to create or update.
+    Normal users can only view.
+    """
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_staff

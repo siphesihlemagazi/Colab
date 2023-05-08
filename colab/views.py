@@ -1,9 +1,8 @@
+from colab import permissions
+from colab import serializers
+from colab.models import Subject, Project, Task, Resource, Discussion, Comment
 from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from colab import serializers
-from colab import permissions
-from colab.models import Subject, Project, Task, Resource, Discussion, Comment
-from rest_framework.permissions import IsAdminUser
 
 
 class SubjectList(generics.ListCreateAPIView):
@@ -12,10 +11,10 @@ class SubjectList(generics.ListCreateAPIView):
     """
     queryset = Subject.objects.all()
     serializer_class = serializers.SubjectSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [permissions.IsStaffOrReadOnly]
 
 
-class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
+class SubjectDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint that allows a subject to be viewed, updated, or deleted.
     """
@@ -32,7 +31,7 @@ class ProjectList(generics.ListCreateAPIView):
     serializer_class = serializers.ProjectSerializer
 
 
-class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
+class ProjectDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint that allows a project to be viewed, updated, or deleted.
     """
@@ -68,7 +67,7 @@ class TaskList(generics.ListCreateAPIView):
         return super().create(request, *args, **kwargs)
 
 
-class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
+class TaskDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint that allows a task to be viewed, updated, or deleted.
     """
@@ -103,7 +102,7 @@ class ResourceList(generics.ListCreateAPIView):
         return super().create(request, *args, **kwargs)
 
 
-class ResourceDetail(generics.RetrieveUpdateDestroyAPIView):
+class ResourceDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint that allows a resource to be viewed, updated, or deleted.
     """
@@ -138,7 +137,7 @@ class DiscussionList(generics.ListCreateAPIView):
         return super().create(request, *args, **kwargs)
 
 
-class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
+class DiscussionDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint that allows a discussion to be viewed, updated, or deleted.
     """
@@ -155,7 +154,7 @@ class CommentList(generics.ListCreateAPIView):
     serializer_class = serializers.CommentSerializer
 
 
-class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+class CommentDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint that allows a comment to be viewed, updated, or deleted.
     """

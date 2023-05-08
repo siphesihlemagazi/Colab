@@ -40,6 +40,7 @@ class RegistrationAPIView(GenericAPIView):
 
 
 class LoginAPIView(GenericAPIView):
+    # Update this to use the new jwt implementation
     authentication_classes = []
     serializer_class = LoginSerializer
 
@@ -105,5 +106,5 @@ class PasswordResetConfirm(GenericAPIView):
             user.save()
             return response.Response({"message": "Password updated successfully"})
         except serializers.ValidationError as e:
-            print("Error", e.detail)
+            print("Error", e.details)
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
