@@ -26,6 +26,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        members_data = validated_data.pop('members', None)
+        instance = super().update(instance, validated_data)
+        if members_data is not None:
+            instance.members.add(*members_data)
+        # remove user from project members
+        remove_member_ids = self.context['request'].data.get('remove_member', [])
+        instance.members.remove(*remove_member_ids)
+
+        return instance
+
 
 class TaskSerializer(serializers.ModelSerializer):
     """

@@ -57,3 +57,22 @@
 --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' \
 --form 'name="English"'`
       4. All users can view subject details: `curl -X GET http://127.0.0.1:8000/api/subjects/1/`
+
+
+5. ProjectList
+   1. **Description:** allows projects to be viewed or created.
+   2. **URL:** `/api/projetcs/`
+   3. **Methods:** `GET` `POST`
+   4. **Test cases:**
+      1. Users should only see projects they belong to: ``curl --location 'http://127.0.0.1:8000/api/projects/' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'``
+      2. Users should see details of the project they belong to: `curl --location --request GET 'http://127.0.0.1:8000/api/projects/1/' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' \
+--form 'members="2"'`
+      3. Only the creator of the project and the project subject instructor should be able to update and delete a project:
+         4. Remove member from project: `curl --location --request PATCH 'http://127.0.0.1:8000/api/projects/1/' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' \
+--form 'remove_member="2"'`
+         5. Add memeber to project: `curl --location --request PATCH 'http://127.0.0.1:8000/api/projects/1/' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' \
+--form 'members="2"'`

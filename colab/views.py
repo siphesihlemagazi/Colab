@@ -27,8 +27,14 @@ class ProjectList(generics.ListCreateAPIView):
     """
     API endpoint that allows projects to be viewed or created.
     """
-    queryset = Project.objects.all()
     serializer_class = serializers.ProjectSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            return Project.objects.none()
+        else:
+            return user.project_set.all()
 
 
 class ProjectDetails(generics.RetrieveUpdateDestroyAPIView):
@@ -37,7 +43,7 @@ class ProjectDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Project.objects.all()
     serializer_class = serializers.ProjectSerializer
-    permission_classes = [permissions.IsProjectStuffOrInstructorOrCreator]
+    permission_classes = [permissions.IsProjectInstructorOrCreator]
 
 
 class TaskList(generics.ListCreateAPIView):

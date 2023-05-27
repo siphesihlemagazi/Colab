@@ -18,22 +18,19 @@ class IsSubjectStaffOrInstructor(permissions.BasePermission):
         return False
 
 
-class IsProjectStuffOrInstructorOrCreator(permissions.BasePermission):
+class IsProjectInstructorOrCreator(permissions.BasePermission):
     """
-    Custom permission to only allow staff users, instructors, and the creator of the project to update a project.
+    Custom permission to only allow project subject instructors, and the creator of the project to update a project.
     """
 
     def has_object_permission(self, request, view, obj):
         user = request.user
         project = obj
 
-        # Check if user is staff
-        if user.is_staff:
-            return True
-
         # Check if user is an instructor of the project's subject
+        # TODO: take a close look at this:
         subject = project.subject
-        if not subject and subject.instructors.filter(id=user.id).exists():
+        if subject and subject.instructors.filter(id=user.id).exists():
             return True
 
         # Check if user is the creator of the project
