@@ -40,11 +40,18 @@ class Task(models.Model):
     """
     Model representing a task that belongs to a project and is assigned to specific users.
     """
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('removed', 'Removed'),
+    ]
 
     title = models.CharField(max_length=255)
     description = models.TextField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     assigned_to = models.ManyToManyField(User, related_name='tasks_assigned')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     completed_by = models.ManyToManyField(User, related_name='tasks_completed', blank=True)
     due_date = models.DateTimeField()
 
