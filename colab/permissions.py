@@ -1,4 +1,6 @@
 from rest_framework import permissions
+from colab.models import Project
+from rest_framework.exceptions import ValidationError
 
 
 class IsSubjectStaffOrInstructor(permissions.BasePermission):
@@ -40,34 +42,50 @@ class IsProjectInstructorOrCreator(permissions.BasePermission):
         return False
 
 
-class IsTaskCreatorOrProjectMemberOrStaff(permissions.BasePermission):
+class IsProjectMember(permissions.BasePermission):
+    """
+    Custom permission to only allow project members to view or create project tasks
+    """
+
+    def has_permission(self, request, view):
+        # Allow all safe methods (GET, HEAD, OPTIONS)
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Check if the method is allowed for the view and let django handle it
+        if request.method not in view.allowed_methods:
+            return True  # This let django handle it
+
+        # Check if the user is a member of the project
+        project_id = request.data.get('project')
+        if project_id:
+            try:
+                project = Project.objects.get(id=project_id)
+                return request.user in project.members.all()
+            except Project.DoesNotExist:
+                return False
+        else:
+            raise ValidationError({"project": ["This field is required."]})
+
+
+class IsProjectTaskMember(permissions.BasePermission):
     """
     Custom permission to only allow project members or creators or staff members to update a task.
     """
 
     def has_object_permission(self, request, view, obj):
-        # Check if the user is a member of the project
         if obj.project and obj.project.members.filter(id=request.user.id).exists():
             return True
-
-        # Check if the user is the creator of the project
-        if obj.project and obj.project.created_by_id == request.user.id:
-            return True
-
-        # Check if user is staff
-        if request.user.is_staff:
-            return True
-
         return False
 
 
-class IsResourceCreatorOrProjectMemberOrStaff(IsTaskCreatorOrProjectMemberOrStaff):
+class IsResourceCreatorOrProjectMemberOrStaff(IsProjectTaskMember):
     """
     Custom permission to only allow project members or creators or staff members to update a resource.
     """
 
 
-class IsDiscussionCreatorOrProjectMemberOrStaff(IsTaskCreatorOrProjectMemberOrStaff):
+class IsDiscussionCreatorOrProjectMemberOrStaff(IsProjectTaskMember):
     """
     Custom permission to only allow project members or creators or staff members to update a discussion.
     """

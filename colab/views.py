@@ -48,29 +48,16 @@ class ProjectDetails(generics.RetrieveUpdateDestroyAPIView):
 
 class TaskList(generics.ListCreateAPIView):
     """
-    API endpoint that allows tasks to be viewed or created.
+    API endpoint that allows project tasks to be viewed or created.
     """
-    queryset = Task.objects.all()
     serializer_class = serializers.TaskSerializer
-    permission_classes = [permissions.IsTaskCreatorOrProjectMemberOrStaff]
+    permission_classes = [permissions.IsProjectMember]
 
-    def create(self, request, *args, **kwargs):
-        # Check if user has permission to create a new task for a project
-
-        project_id = request.data.get('project')
-        if project_id is not None:
-            try:
-                project = Project.objects.get(id=project_id)
-                if request.user not in project.members.all() and not request.user.is_staff:
-                    raise PermissionDenied('You do not have permission to create a task for this project')
-            except Project.DoesNotExist:
-                raise ValidationError('Invalid project ID')
-        elif not request.user.is_staff:
-            projects = Project.objects.filter(members=request.user)
-            if not projects.exists():
-                raise PermissionDenied('You do not have permission to create a task without specifying a project ID')
-
-        return super().create(request, *args, **kwargs)
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            return Project.objects.none()
+        return Task.objects.filter(project__members=user)
 
 
 class TaskDetails(generics.RetrieveUpdateDestroyAPIView):
@@ -79,7 +66,7 @@ class TaskDetails(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Task.objects.all()
     serializer_class = serializers.TaskSerializer
-    permission_classes = [permissions.IsTaskCreatorOrProjectMemberOrStaff]
+    permission_classes = [permissions.IsProjectTaskMember]
 
 
 class ResourceList(generics.ListCreateAPIView):
